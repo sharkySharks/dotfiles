@@ -1,0 +1,11 @@
+# Copy to ~/.ssh/config
+#
+# Use `ssh-keygen` command to generate public and private auth keys
+# https://www.ssh.com/ssh/keygen/
+
+Host <give-it-a-name>
+  HostName <name or ip>
+  User <user>
+  Port <port number>
+  LocalForward <port number> <address>
+  IdentityFile ~/.ssh/<your-private-key>

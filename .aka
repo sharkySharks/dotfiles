@@ -1,0 +1,24 @@
+# Using akajs to to manage aliases: https://www.npmjs.com/package/akajs
+#
+# aliases to make my life easier
+# extends aliases already provided by zsh, type `alias` to see full list of zsh aliases
+
+
+alias boom='ls -al'
+alias zshconfig="subl ~/.zshrc"
+alias zshsrc="source ~/.zshrc"
+alias glo="git log --oneline --decorate --graph"
+alias gfa="git fetch --all"
+alias gcm="git commit -m"
+alias grh="git reset --hard"
+alias gstsb="git status -sb"
+alias saka='source ~/.aka'
+alias akattack='subl ~/.aka'
+alias zap='lsof -i -nP | grep 'LISTEN''
+alias gbd='git branch -d'
+alias gbD='git branch -D'
+alias redoit='rm -rf compiled/ && bower install && gulp server:stubbed'
+alias simple-server='python -m SimpleHTTPServer 8000'
+alias pro='./node_modules/.bin/protractor'
+alias wdr='./node_modules/.bin/webdriver-manager'
+alias gcan='git commit --amend --no-edit'
