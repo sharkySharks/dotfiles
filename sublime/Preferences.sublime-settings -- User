@@ -43,7 +43,6 @@
         "dist/*"
     ],
     "bold_folder_labels": true,
-    "color_scheme": "Packages/User/SublimeLinter/Array (SL).tmTheme",
     "create_window_at_startup": false,
     "ensure_newline_at_eof_on_save": true,
     "font_size": 15,
