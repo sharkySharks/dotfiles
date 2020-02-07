@@ -57,6 +57,13 @@ ZSH_THEME="nebirhos"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# add completion path to fpath, ie search path for function definitions
+fpath=(
+  ~/.zsh/completion 
+  $fpath
+)
+autoload -Uz compinit && compinit -i
+
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -98,8 +105,21 @@ bindkey -s "^[Oj" "*"
 bindkey -s "^[Oo" "/"
 bindkey -s "^[OX" "="
 
-# export MANPATH="/usr/local/man:$MANPATH"
+#add bin to PATH
+export PATH="/bin:$PATH"
 
+#tgenv
+export PATH="$HOME/.tgenv/bin:$PATH"
+
+#golang
+export GOPATH=$HOME/code/go
+export GOBIN=$GOPATH/bin
+export PATH=/Users/althen/Library/Python/2.7/bin:$(go env GOPATH)/bin:$PATH
+
+#protoc - grpc - https://grpc.io/docs/quickstart/go/
+export PATH="$HOME/.protoc/protoc-3.11.2-osx-x86_64/bin:$PATH"
+
+# export MANPATH="/usr/local/man:$MANPATH"
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
