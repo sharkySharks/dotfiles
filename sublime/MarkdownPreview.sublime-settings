@@ -1,5 +1,0 @@
-{
-    "browser": "/Applications/Google Chrome.app",
-    "parser": "github",
-    "build_action": "browser",
-}

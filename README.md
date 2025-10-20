@@ -1,4 +1,4 @@
 # dotfiles
 Sharky's configs
 
-Place to keep all of my settings for ZSH, Sublime, and other tools as well as some helpful scripts.
+Place to keep helpful scripts and personalized configurations for tooling like ZSH, iterm2, etc.
