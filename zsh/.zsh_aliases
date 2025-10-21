@@ -1,0 +1,13 @@
+alias boom='ls -al'
+alias zshconfig="open ~/.zshrc"
+alias sourcezsh="source ~/.zshrc"
+alias glo="git log --oneline --decorate --graph"
+alias gfa="git fetch --all"
+alias gcm="git commit -m"
+alias grh="git reset --hard"
+alias gstsb="git status -sb"
+alias zap='lsof -i -nP | grep 'LISTEN''
+alias gbd='git branch -d'
+alias gbD='git branch -D'
+alias gcan='git commit --amend --no-edit'
+alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
