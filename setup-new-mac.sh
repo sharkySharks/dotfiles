@@ -17,12 +17,30 @@ warn()  { printf "\033[1;33m⚠ %s\033[0m\n" "$1"; }
 
 ###############################################################################
 # Xcode Command Line Tools
+# Uses softwareupdate instead of xcode-select --install to avoid the GUI
+# dialog, which can be intercepted by corporate MDM / managed software servers.
 ###############################################################################
 info "Checking Xcode Command Line Tools..."
 if ! xcode-select -p &>/dev/null; then
-    xcode-select --install
-    echo "Press Enter after Xcode CLI tools finish installing..."
-    read -r
+    info "Installing Xcode Command Line Tools via softwareupdate..."
+    touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    CLT_PACKAGE=$(softwareupdate -l 2>/dev/null \
+        | grep -o ".*Command Line Tools.*" \
+        | grep -v "^\\*" \
+        | sed 's/^[[:space:]]*//' \
+        | sort -V \
+        | tail -1)
+    if [ -n "$CLT_PACKAGE" ]; then
+        softwareupdate -i "$CLT_PACKAGE" --verbose
+        rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    else
+        rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+        warn "Could not find CLT package via softwareupdate — falling back to xcode-select"
+        xcode-select --install
+        echo "Press Enter after Xcode CLI tools finish installing..."
+        read -r
+    fi
+    ok "Xcode CLI tools installed"
 else
     ok "Xcode CLI tools already installed"
 fi
