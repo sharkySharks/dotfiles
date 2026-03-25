@@ -1,0 +1,45 @@
+# Using akajs to manage aliases: https://www.npmjs.com/package/akajs
+#
+# aliases to make my life easier
+# extends aliases already provided by zsh, type `alias` to see full list of zsh aliases
+
+
+alias boom='ls -al'
+alias zshconfig="code ~/.zshrc"
+alias sourcezsh="source ~/.zshrc"
+alias glo="git log --oneline --decorate --graph"
+alias gfa="git fetch --all"
+alias gcm="git commit -m"
+alias grh="git reset --hard"
+alias gstsb="git status -sb"
+alias saka='source ~/.aka'
+alias akattack='subl ~/.aka'
+alias zap='lsof -i -nP | grep 'LISTEN''
+alias gbd='git branch -d'
+alias gbD='git branch -D'
+alias simple-server='python -m SimpleHTTPServer 8000'
+alias gcan='git commit --amend --no-edit'
+alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
+alias npmca='npm run clean:all'
+alias dim='docker images'
+alias dps='docker ps'
+alias dex='docker exec'
+alias dcu='docker-compose up'
+alias dcd='docker-compose down'
+alias dcb='docker-compose build'
+alias dcdbu='dcd && dcb && dcu'
+alias k='kubecolor'
+alias ke='k explain'
+alias minienv='eval $(minikube docker-env)'
+alias rmdang='docker rmi $(docker images -f dangling=true -q) -f'
+alias unsetmini='unset DOCKER_TLS_VERIFY; unset DOCKER_HOST; unset DOCKER_CERT_PATH; unset MINIKUBE_ACTIVE_DOCKERD;'
+alias kxt='klam-ext'
+alias ksc='kubectl config set-context --current'
+alias kuc='kubectl config use-context'
+alias kens='~/.ens'
+alias kectx='~/.ectx'
+alias klear='kubectl config unset current-context'
+alias python='python3'
+alias pip='pip3'
+alias tfswitch='tfswitch -b ~/.bin/terraform'
+alias tgswitch='tgswitch -b ~/.bin/terragrunt'
