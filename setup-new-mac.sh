@@ -11,8 +11,6 @@ set -euo pipefail
 # This script is idempotent — safe to re-run if something fails partway.
 ###############################################################################
 
-DOTFILES_DIR="$(cd "$(dirname "$0")/dotfiles" && pwd)"
-
 info()  { printf "\n\033[1;34m→ %s\033[0m\n" "$1"; }
 ok()    { printf "\033[1;32m✓ %s\033[0m\n" "$1"; }
 warn()  { printf "\033[1;33m⚠ %s\033[0m\n" "$1"; }
