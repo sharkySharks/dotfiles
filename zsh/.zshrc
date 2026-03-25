@@ -41,8 +41,14 @@ bindkey -s "^[OX" "="
 
 export PATH="/bin:$PATH"
 
+# homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # protoc / gRPC
 export PATH="/opt/homebrew/opt/protobuf/bin:$PATH"
+
+# libpq (keg-only)
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # golang
 export GOPATH=$HOME/go
@@ -51,6 +57,11 @@ export PATH="$GOBIN:$PATH"
 # Uncomment and update if you need a specific Go version:
 # export GOROOT=$(go1.22.0 env GOROOT)
 # export PATH="$GOROOT/bin:$PATH"
+
+# chruby
+source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+source /opt/homebrew/opt/chruby/share/chruby/auto.sh
+chruby ruby-3.1.3
 
 # aliases
 source ~/.aka
@@ -111,6 +122,9 @@ load-tfswitch() {
 }
 add-zsh-hook chpwd load-tfswitch
 load-tfswitch
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"

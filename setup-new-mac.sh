@@ -17,30 +17,37 @@ warn()  { printf "\033[1;33m⚠ %s\033[0m\n" "$1"; }
 
 ###############################################################################
 # Xcode Command Line Tools
-# Uses softwareupdate instead of xcode-select --install to avoid the GUI
-# dialog, which can be intercepted by corporate MDM / managed software servers.
+# If full Xcode.app is installed, point xcode-select at it.
+# Otherwise install standalone CLT via softwareupdate.
 ###############################################################################
 info "Checking Xcode Command Line Tools..."
 if ! xcode-select -p &>/dev/null; then
-    info "Installing Xcode Command Line Tools via softwareupdate..."
-    touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-    CLT_PACKAGE=$(softwareupdate -l 2>/dev/null \
-        | grep -o ".*Command Line Tools.*" \
-        | grep -v "^\\*" \
-        | sed 's/^[[:space:]]*//' \
-        | sort -V \
-        | tail -1)
-    if [ -n "$CLT_PACKAGE" ]; then
-        softwareupdate -i "$CLT_PACKAGE" --verbose
-        rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    if [ -d "/Applications/Xcode.app/Contents/Developer" ]; then
+        info "Full Xcode.app found — switching xcode-select to use it..."
+        sudo /usr/bin/xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        sudo xcodebuild -license accept 2>/dev/null || true
+        ok "xcode-select pointed at Xcode.app"
     else
-        rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-        warn "Could not find CLT package via softwareupdate — falling back to xcode-select"
-        xcode-select --install
-        echo "Press Enter after Xcode CLI tools finish installing..."
-        read -r
+        info "Installing Xcode Command Line Tools via softwareupdate..."
+        touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+        CLT_PACKAGE=$(softwareupdate -l 2>/dev/null \
+            | grep -o ".*Command Line Tools.*" \
+            | grep -v "^\\*" \
+            | sed 's/^[[:space:]]*//' \
+            | sort -V \
+            | tail -1)
+        if [ -n "$CLT_PACKAGE" ]; then
+            softwareupdate -i "$CLT_PACKAGE" --verbose
+            rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+        else
+            rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+            warn "Could not find CLT package via softwareupdate — falling back to xcode-select"
+            xcode-select --install
+            echo "Press Enter after Xcode CLI tools finish installing..."
+            read -r
+        fi
+        ok "Xcode CLI tools installed"
     fi
-    ok "Xcode CLI tools installed"
 else
     ok "Xcode CLI tools already installed"
 fi
@@ -50,8 +57,32 @@ fi
 ###############################################################################
 info "Installing Homebrew..."
 if ! command -v brew &>/dev/null; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Homebrew's installer fails when only full Xcode.app is present (no standalone CLT).
+    # Download, patch the CLT check to recognise Xcode.app, then run.
+    BREW_INSTALLER="$(mktemp)"
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o "${BREW_INSTALLER}"
+
+    # If full Xcode.app exists, make should_install_command_line_tools() return early
+    if [ -e "/Applications/Xcode.app/Contents/Developer/usr/bin/git" ]; then
+        sed -i '' '/^should_install_command_line_tools() {/,/^}/ {
+            /return 1/! {
+                /^should_install_command_line_tools() {/ a\
+\  # Full Xcode.app detected — skip standalone CLT install\
+\  if [[ -e "/Applications/Xcode.app/Contents/Developer/usr/bin/git" ]]; then return 1; fi
+            }
+        }' "${BREW_INSTALLER}"
+    fi
+
+    NONINTERACTIVE=1 /bin/bash "${BREW_INSTALLER}"
+    rm -f "${BREW_INSTALLER}"
+
     eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    if ! command -v brew &>/dev/null; then
+        warn "Homebrew installation failed — please install manually and re-run"
+        exit 1
+    fi
+    ok "Homebrew installed"
 else
     ok "Homebrew already installed"
 fi
@@ -111,6 +142,7 @@ FORMULAE=(
     vault
     helm
     kubernetes-cli
+    kube-ps1
     kubelogin
     kubetail
     minikube
@@ -131,6 +163,9 @@ FORMULAE=(
     protoc-gen-go
     protoc-gen-go-grpc
     grpcurl
+
+    # Shell
+    bash
 
     # General CLI tools
     jq
@@ -293,7 +328,12 @@ fi
 ###############################################################################
 info "Installing SDKMAN..."
 if [ ! -d "$HOME/.sdkman" ]; then
-    curl -s "https://get.sdkman.io" | bash
+    BREW_BASH="$(brew --prefix)/bin/bash"
+    if [ -x "$BREW_BASH" ]; then
+        curl -s "https://get.sdkman.io" | "$BREW_BASH"
+    else
+        warn "Homebrew bash not found — SDKMAN requires Bash 4+; skipping"
+    fi
 else
     ok "SDKMAN already installed"
 fi
