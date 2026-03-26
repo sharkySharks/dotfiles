@@ -2,7 +2,6 @@ anysphere.cursorpyright
 betajob.modulestf
 clemenspeters.format-json
 golang.go
-meezilla.json
 ms-azuretools.vscode-containers
 ms-azuretools.vscode-docker
 ms-python.debugpy
